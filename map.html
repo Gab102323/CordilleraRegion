@@ -16,6 +16,8 @@
             background: linear-gradient(135deg, #1a2f1a 0%, #2c5530 100%);
             overflow: hidden;
             color: #333;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container {
@@ -724,6 +726,230 @@
             background: #e67e22;
             transform: translateY(-2px);
         }
+
+        /* ========== MOBILE ENHANCEMENTS ========== */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .map-section {
+                height: 60vh;
+                border-right: none;
+                border-bottom: 3px solid #2c5530;
+                flex: none;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 40vh;
+                border-left: none;
+                border-top: 4px solid #2c5530;
+                padding: 20px;
+                position: relative;
+            }
+            
+            .toggle-sidebar {
+                left: 50%;
+                transform: translateX(-50%);
+                top: -45px;
+                border-radius: 8px 8px 0 0;
+                padding: 8px 20px;
+                font-size: 14px;
+            }
+            
+            .toggle-sidebar:hover {
+                padding-left: 20px;
+            }
+            
+            .map-navigation {
+                top: 10px;
+                left: 10px;
+                padding: 10px;
+            }
+            
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            .zoom-controls {
+                bottom: 10px;
+                right: 10px;
+                padding: 8px;
+            }
+            
+            .zoom-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+            
+            .about-link {
+                top: 10px;
+                right: 10px;
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 15px;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+                margin: 20px 0 10px 0;
+            }
+            
+            .cultural-insights {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .insight-item {
+                padding: 12px;
+                margin: 10px 0;
+            }
+            
+            .insight-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 16px;
+                margin-right: 12px;
+            }
+            
+            .music-player {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .play-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .spot-item {
+                padding: 12px;
+            }
+            
+            .image-gallery {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+                margin: 15px 0;
+            }
+            
+            .gallery-image {
+                height: 120px;
+            }
+            
+            .gallery-caption {
+                padding: 8px;
+            }
+            
+            .gallery-caption h4 {
+                font-size: 13px;
+            }
+            
+            .gallery-caption p {
+                font-size: 11px;
+            }
+            
+            .story-modal {
+                width: 90%;
+                max-width: none;
+                padding: 20px;
+            }
+            
+            .story-image {
+                height: 150px;
+                font-size: 36px;
+            }
+            
+            .custom-alert {
+                padding: 20px;
+                width: 95%;
+            }
+            
+            .custom-alert h3 {
+                font-size: 1.2rem;
+            }
+            
+            .custom-alert button {
+                padding: 12px 20px;
+                width: 100%;
+            }
+            
+            /* Mobile-specific touch improvements */
+            .province {
+                stroke-width: 3;
+            }
+            
+            .cultural-hotspot {
+                r: 18;
+            }
+            
+            .province-label {
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+
+        /* Additional mobile-specific styles for very small screens */
+        @media (max-width: 480px) {
+            .sidebar {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .image-gallery {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .insight-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .insight-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .player-controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .sidebar {
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .map-section {
+                -webkit-user-select: none;
+                user-select: none;
+            }
+        }
+
+        /* Android Chrome specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+            .sidebar {
+                scrollbar-width: none;
+            }
+            
+            .sidebar::-webkit-scrollbar {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -962,369 +1188,369 @@
             }
         };
 
-         // ========== COMPLETE PROVINCE DATA WITH DESCRIPTIONS ==========
-const provinces = {
-    "abra": {
-        name: "Abra Province",
-        info: "Abra is a landlocked province known for its natural caves, rivers, and the majestic Abra River. It's rich in history and culture, home to the Tingguian people.",
-        spots: {
-            natural: [
-                {
-                    name: "Apao Rolling Hills",
-                    description: "🌄 Vast expanse of green hills that resemble waves, offering breathtaking panoramic views of Abra's landscape. Perfect for photography, nature walks, and witnessing spectacular sunsets."
+        // ========== COMPLETE PROVINCE DATA WITH DESCRIPTIONS ==========
+        const provinces = {
+            "abra": {
+                name: "Abra Province",
+                info: "Abra is a landlocked province known for its natural caves, rivers, and the majestic Abra River. It's rich in history and culture, home to the Tingguian people.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Apao Rolling Hills",
+                            description: "🌄 Vast expanse of green hills that resemble waves, offering breathtaking panoramic views of Abra's landscape. Perfect for photography, nature walks, and witnessing spectacular sunsets."
+                        },
+                        {
+                            name: "Kaparkan Falls", 
+                            description: "💧 Multi-tiered waterfalls with unique rock formations creating natural infinity pools. Known for its turquoise waters during dry season and surrounded by lush vegetation."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Layugan Garden",
+                            description: "🌿 Beautifully landscaped public garden featuring native plants, flowing streams, and peaceful walking paths perfect for family picnics and meditation."
+                        },
+                        {
+                            name: "Calaba and Don Marianos Bridge",
+                            description: "🏛️ Historic Spanish-era stone bridges that showcase colonial architecture and serve as important cultural landmarks in the province."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "St. James the Elder Cathedral",
+                            description: "⛪ Magnificent centuries-old cathedral in Bangued featuring Baroque architecture and intricate religious artifacts dating back to Spanish colonization."
+                        },
+                        {
+                            name: "St. Catherine of Alexandria Church (Tayum Church)",
+                            description: "🕍 UNESCO World Heritage Site candidate, known for its earthquake-resistant architecture and well-preserved 19th-century design."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Kawayan Festival",
+                            description: "🎋 Annual celebration highlighting Abra's bamboo industry with street dancing, craft exhibitions, and cultural performances showcasing Tingguian traditions."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Kinnamayan Textiles",
+                            description: "🧵 Handwoven textiles featuring intricate geometric patterns and natural dyes, representing the rich cultural heritage of Tingguian weavers."
+                        }
+                    ]
                 },
-                {
-                    name: "Kaparkan Falls", 
-                    description: "💧 Multi-tiered waterfalls with unique rock formations creating natural infinity pools. Known for its turquoise waters during dry season and surrounded by lush vegetation."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Layugan Garden",
-                    description: "🌿 Beautifully landscaped public garden featuring native plants, flowing streams, and peaceful walking paths perfect for family picnics and meditation."
-                },
-                {
-                    name: "Calaba and Don Marianos Bridge",
-                    description: "🏛️ Historic Spanish-era stone bridges that showcase colonial architecture and serve as important cultural landmarks in the province."
-                }
-            ],
-            religious: [
-                {
-                    name: "St. James the Elder Cathedral",
-                    description: "⛪ Magnificent centuries-old cathedral in Bangued featuring Baroque architecture and intricate religious artifacts dating back to Spanish colonization."
-                },
-                {
-                    name: "St. Catherine of Alexandria Church (Tayum Church)",
-                    description: "🕍 UNESCO World Heritage Site candidate, known for its earthquake-resistant architecture and well-preserved 19th-century design."
-                }
-            ],
-            event: [
-                {
-                    name: "Kawayan Festival",
-                    description: "🎋 Annual celebration highlighting Abra's bamboo industry with street dancing, craft exhibitions, and cultural performances showcasing Tingguian traditions."
-                }
-            ],
-            product: [
-                {
-                    name: "Kinnamayan Textiles",
-                    description: "🧵 Handwoven textiles featuring intricate geometric patterns and natural dyes, representing the rich cultural heritage of Tingguian weavers."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Apao Rolling Hills",
-                description: "Vast green hills that roll across the landscape"
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Apao Rolling Hills",
+                        description: "Vast green hills that roll across the landscape"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Kaparkan Falls",
+                        description: "Multi-tiered waterfalls with natural rock formations"
+                    }
+                ]
             },
-            {
-                url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Kaparkan Falls",
-                description: "Multi-tiered waterfalls with natural rock formations"
-            }
-        ]
-    },
-    "apayao": {
-        name: "Apayao Province",
-        info: "Apayao is the northernmost province, characterized by lush forests, stunning waterfalls, and the pristine Apayao River. It's the domain of the Isneg people.",
-        spots: {
-            natural: [
-                {
-                    name: "Lussok Crystal Cave",
-                    description: "💎 Spectacular cave system featuring stunning crystal formations, underground rivers, and chambers that reveal millions of years of geological history."
+            "apayao": {
+                name: "Apayao Province",
+                info: "Apayao is the northernmost province, characterized by lush forests, stunning waterfalls, and the pristine Apayao River. It's the domain of the Isneg people.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Lussok Crystal Cave",
+                            description: "💎 Spectacular cave system featuring stunning crystal formations, underground rivers, and chambers that reveal millions of years of geological history."
+                        },
+                        {
+                            name: "Mt. Kilang",
+                            description: "⛰️ Majestic mountain peak offering challenging trails for experienced hikers and rewarding summit views of Apayao's untouched wilderness."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Isnag Heritage Houses",
+                            description: "🏠 Traditional Isneg houses built using indigenous architectural techniques, showcasing the community's sustainable building practices."
+                        },
+                        {
+                            name: "Hanging Bridge of Cagandungan",
+                            description: "🌉 Swaying footbridge made from local materials that crosses the river, offering adventurous crossing and beautiful river views."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "Holy Rosary Church",
+                            description: "⛪ Historic church that blends Catholic traditions with indigenous Isneg architectural elements, representing cultural synthesis."
+                        },
+                        {
+                            name: "Bethany Cavalry Church",
+                            description: "🙏 Secluded mountain church known for its peaceful atmosphere and stunning location overlooking Apayao's forested valleys."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Rambak ni Mannalon",
+                            description: "🌾 Agricultural festival celebrating Apayao's farming traditions with harvest rituals, traditional games, and community feasting."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Coffee (Apayao Blend)",
+                            description: "☕ Premium Arabica coffee grown in Apayao's highlands, known for its rich flavor profile and sustainable farming practices."
+                        }
+                    ]
                 },
-                {
-                    name: "Mt. Kilang",
-                    description: "⛰️ Majestic mountain peak offering challenging trails for experienced hikers and rewarding summit views of Apayao's untouched wilderness."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Isnag Heritage Houses",
-                    description: "🏠 Traditional Isneg houses built using indigenous architectural techniques, showcasing the community's sustainable building practices."
-                },
-                {
-                    name: "Hanging Bridge of Cagandungan",
-                    description: "🌉 Swaying footbridge made from local materials that crosses the river, offering adventurous crossing and beautiful river views."
-                }
-            ],
-            religious: [
-                {
-                    name: "Holy Rosary Church",
-                    description: "⛪ Historic church that blends Catholic traditions with indigenous Isneg architectural elements, representing cultural synthesis."
-                },
-                {
-                    name: "Bethany Cavalry Church",
-                    description: "🙏 Secluded mountain church known for its peaceful atmosphere and stunning location overlooking Apayao's forested valleys."
-                }
-            ],
-            event: [
-                {
-                    name: "Rambak ni Mannalon",
-                    description: "🌾 Agricultural festival celebrating Apayao's farming traditions with harvest rituals, traditional games, and community feasting."
-                }
-            ],
-            product: [
-                {
-                    name: "Coffee (Apayao Blend)",
-                    description: "☕ Premium Arabica coffee grown in Apayao's highlands, known for its rich flavor profile and sustainable farming practices."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Lussok Crystal Cave",
-                description: "Magnificent crystal formations underground"
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Lussok Crystal Cave",
+                        description: "Magnificent crystal formations underground"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Mt. Kilang",
+                        description: "Scenic mountain trails and viewpoints"
+                    }
+                ]
             },
-            {
-                url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Mt. Kilang",
-                description: "Scenic mountain trails and viewpoints"
-            }
-        ]
-    },
-    "benguet": {
-        name: "Benguet Province", 
-        info: "Home to Baguio City, the Summer Capital of the Philippines. Famous for its cool climate, strawberry farms, and Mount Pulag, the highest peak in Luzon.",
-        spots: {
-            natural: [
-                {
-                    name: "Mt. Pulag",
-                    description: "⛰️ Third highest mountain in the Philippines famous for its 'sea of clouds' phenomenon and diverse mossy forest ecosystem at 2,926 meters above sea level."
+            "benguet": {
+                name: "Benguet Province", 
+                info: "Home to Baguio City, the Summer Capital of the Philippines. Famous for its cool climate, strawberry farms, and Mount Pulag, the highest peak in Luzon.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Mt. Pulag",
+                            description: "⛰️ Third highest mountain in the Philippines famous for its 'sea of clouds' phenomenon and diverse mossy forest ecosystem at 2,926 meters above sea level."
+                        },
+                        {
+                            name: "Bridal Veil Falls",
+                            description: "💫 Picturesque 60-foot waterfall that cascades like a bridal veil into a natural pool, surrounded by lush pine forests and perfect for swimming."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Igorot Stone Kingdom",
+                            description: "🏰 Modern cultural park featuring stone structures inspired by Igorot architecture, with educational exhibits about Cordillera heritage."
+                        },
+                        {
+                            name: "La Trinidad Strawberry Farm",
+                            description: "🍓 Vast strawberry plantation where visitors can pick fresh strawberries, learn about cultivation, and enjoy strawberry-based products."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "Baguio Cathedral of Our Lady of Atonement",
+                            description: "✝️ Iconic pink cathedral perched on a hilltop, featuring stunning rose windows and serving as a spiritual landmark in Baguio City."
+                        },
+                        {
+                            name: "Pink Sisters' Convent and Chapel",
+                            description: "🙏 Serene convent known for its pink-themed architecture and peaceful chapel where visitors can experience moments of quiet reflection."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Panagbenga Festival",
+                            description: "🌸 Month-long flower festival featuring grand floral floats, street dancing in flower costumes, and garden exhibitions celebrating Benguet's blooms."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Strawberry Taho / Strawberry Jam",
+                            description: "🥛 Fresh strawberry taho (soy pudding) and homemade jams made from La Trinidad's famous strawberries, beloved local delicacies."
+                        }
+                    ]
                 },
-                {
-                    name: "Bridal Veil Falls",
-                    description: "💫 Picturesque 60-foot waterfall that cascades like a bridal veil into a natural pool, surrounded by lush pine forests and perfect for swimming."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Igorot Stone Kingdom",
-                    description: "🏰 Modern cultural park featuring stone structures inspired by Igorot architecture, with educational exhibits about Cordillera heritage."
-                },
-                {
-                    name: "La Trinidad Strawberry Farm",
-                    description: "🍓 Vast strawberry plantation where visitors can pick fresh strawberries, learn about cultivation, and enjoy strawberry-based products."
-                }
-            ],
-            religious: [
-                {
-                    name: "Baguio Cathedral of Our Lady of Atonement",
-                    description: "✝️ Iconic pink cathedral perched on a hilltop, featuring stunning rose windows and serving as a spiritual landmark in Baguio City."
-                },
-                {
-                    name: "Pink Sisters' Convent and Chapel",
-                    description: "🙏 Serene convent known for its pink-themed architecture and peaceful chapel where visitors can experience moments of quiet reflection."
-                }
-            ],
-            event: [
-                {
-                    name: "Panagbenga Festival",
-                    description: "🌸 Month-long flower festival featuring grand floral floats, street dancing in flower costumes, and garden exhibitions celebrating Benguet's blooms."
-                }
-            ],
-            product: [
-                {
-                    name: "Strawberry Taho / Strawberry Jam",
-                    description: "🥛 Fresh strawberry taho (soy pudding) and homemade jams made from La Trinidad's famous strawberries, beloved local delicacies."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Mount Pulag",
-                description: "Sea of clouds at the highest peak in Luzon"
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Mount Pulag",
+                        description: "Sea of clouds at the highest peak in Luzon"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Baguio City",
+                        description: "Summer capital with pine tree landscapes"
+                    }
+                ]
             },
-            {
-                url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Baguio City",
-                description: "Summer capital with pine tree landscapes"
-            }
-        ]
-    },
-    "ifugao": {
-        name: "Ifugao Province",
-        info: "The legendary home of the Banaue Rice Terraces, a UNESCO World Heritage Site. A testament to the engineering genius of the Ifugao people.",
-        spots: {
-            natural: [
-                {
-                    name: "Mt. Amuyao",
-                    description: "⛰️ One of the highest peaks in the Philippines at 2,702 meters, offering challenging climbs and spectacular views of surrounding rice terraces."
+            "ifugao": {
+                name: "Ifugao Province",
+                info: "The legendary home of the Banaue Rice Terraces, a UNESCO World Heritage Site. A testament to the engineering genius of the Ifugao people.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Mt. Amuyao",
+                            description: "⛰️ One of the highest peaks in the Philippines at 2,702 meters, offering challenging climbs and spectacular views of surrounding rice terraces."
+                        },
+                        {
+                            name: "Tappiya Waterfalls",
+                            description: "💧 Powerful 70-meter waterfall located near Batad Rice Terraces, accessible through scenic hikes and perfect for refreshing dips."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Banaue Rice Terraces",
+                            description: "🌾 2,000-year-old terraces carved into mountains by Ifugao ancestors, often called the 'Eighth Wonder of the World' and UNESCO heritage site."
+                        },
+                        {
+                            name: "Tam-an Village",
+                            description: "🏠 Traditional Ifugao village showcasing native houses, wood carving traditions, and authentic cultural practices passed through generations."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "Lagave Catholic Church",
+                            description: "⛪ Historic church that represents the fusion of Catholic faith with Ifugao traditions, featuring unique local architectural elements."
+                        },
+                        {
+                            name: "St. Mary Magdalene Parish (Hapao)",
+                            description: "🙏 Century-old church serving the Hapao community, known for its simple beauty and important role in local religious life."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Gotad ad Ifugao Festival",
+                            description: "🎉 Cultural festival celebrating Ifugao heritage with traditional rituals, native games, and performances of the Hudhud epic chants."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Tinawon Rice",
+                            description: "🍚 Premium heirloom rice variety grown only once a year in Ifugao's terraces, known for its exceptional aroma and nutritional value."
+                        }
+                    ]
                 },
-                {
-                    name: "Tappiya Waterfalls",
-                    description: "💧 Powerful 70-meter waterfall located near Batad Rice Terraces, accessible through scenic hikes and perfect for refreshing dips."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Banaue Rice Terraces",
-                    description: "🌾 2,000-year-old terraces carved into mountains by Ifugao ancestors, often called the 'Eighth Wonder of the World' and UNESCO heritage site."
-                },
-                {
-                    name: "Tam-an Village",
-                    description: "🏠 Traditional Ifugao village showcasing native houses, wood carving traditions, and authentic cultural practices passed through generations."
-                }
-            ],
-            religious: [
-                {
-                    name: "Lagave Catholic Church",
-                    description: "⛪ Historic church that represents the fusion of Catholic faith with Ifugao traditions, featuring unique local architectural elements."
-                },
-                {
-                    name: "St. Mary Magdalene Parish (Hapao)",
-                    description: "🙏 Century-old church serving the Hapao community, known for its simple beauty and important role in local religious life."
-                }
-            ],
-            event: [
-                {
-                    name: "Gotad ad Ifugao Festival",
-                    description: "🎉 Cultural festival celebrating Ifugao heritage with traditional rituals, native games, and performances of the Hudhud epic chants."
-                }
-            ],
-            product: [
-                {
-                    name: "Tinawon Rice",
-                    description: "🍚 Premium heirloom rice variety grown only once a year in Ifugao's terraces, known for its exceptional aroma and nutritional value."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Banaue Rice Terraces",
-                description: "2,000-year-old engineering marvel"
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Banaue Rice Terraces",
+                        description: "2,000-year-old engineering marvel"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Mount Amuyao",
+                        description: "Majestic peak with panoramic views"
+                    }
+                ]
             },
-            {
-                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Mount Amuyao",
-                description: "Majestic peak with panoramic views"
-            }
-        ]
-    },
-    "kalinga": {
-        name: "Kalinga Province",
-        info: "Known for its powerful Chico River, rich tattoo traditions (home to the legendary mambabatok Whang-od), and vibrant cultural festivals.",
-        spots: {
-            natural: [
-                {
-                    name: "Chico River",
-                    description: "🌊 Major river system flowing through Kalinga, famous for whitewater rafting adventures and scenic riverside communities."
+            "kalinga": {
+                name: "Kalinga Province",
+                info: "Known for its powerful Chico River, rich tattoo traditions (home to the legendary mambabatok Whang-od), and vibrant cultural festivals.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Chico River",
+                            description: "🌊 Major river system flowing through Kalinga, famous for whitewater rafting adventures and scenic riverside communities."
+                        },
+                        {
+                            name: "Lubuagan Rice Terraces",
+                            description: "🌾 Lesser-known but equally stunning rice terraces offering pristine views and authentic cultural experiences away from crowds."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Kalinga Cultural Center & Museum",
+                            description: "🏛️ Educational center preserving Kalinga's cultural heritage through artifacts, traditional tools, and exhibits on tattoo traditions."
+                        },
+                        {
+                            name: "Awichon Village (Lubuagan)",
+                            description: "🏠 Traditional Kalinga village where visitors can witness authentic tattoo practices and learn about indigenous community life."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "St. Joseph Husband of Mary Parish Church",
+                            description: "⛪ Beautiful church that serves as both spiritual center and community gathering place, featuring local architectural influences."
+                        },
+                        {
+                            name: "St. William's Cathedral",
+                            description: "✝️ Main cathedral in Tabuk City combining modern design with traditional Kalinga motifs, representing the province's evolving identity."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Bodong Festival",
+                            description: "🎉 Peace pact festival celebrating Kalinga's traditional conflict resolution systems with tribal ceremonies, dances, and community unity."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Kalinga Tattoos (Whang-Od's Traditional Tattooing)",
+                            description: "✍️ Ancient tattoo art using traditional hand-tapping methods, with designs that tell stories of bravery, status, and life journeys."
+                        }
+                    ]
                 },
-                {
-                    name: "Lubuagan Rice Terraces",
-                    description: "🌾 Lesser-known but equally stunning rice terraces offering pristine views and authentic cultural experiences away from crowds."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Kalinga Cultural Center & Museum",
-                    description: "🏛️ Educational center preserving Kalinga's cultural heritage through artifacts, traditional tools, and exhibits on tattoo traditions."
-                },
-                {
-                    name: "Awichon Village (Lubuagan)",
-                    description: "🏠 Traditional Kalinga village where visitors can witness authentic tattoo practices and learn about indigenous community life."
-                }
-            ],
-            religious: [
-                {
-                    name: "St. Joseph Husband of Mary Parish Church",
-                    description: "⛪ Beautiful church that serves as both spiritual center and community gathering place, featuring local architectural influences."
-                },
-                {
-                    name: "St. William's Cathedral",
-                    description: "✝️ Main cathedral in Tabuk City combining modern design with traditional Kalinga motifs, representing the province's evolving identity."
-                }
-            ],
-            event: [
-                {
-                    name: "Bodong Festival",
-                    description: "🎉 Peace pact festival celebrating Kalinga's traditional conflict resolution systems with tribal ceremonies, dances, and community unity."
-                }
-            ],
-            product: [
-                {
-                    name: "Kalinga Tattoos (Whang-Od's Traditional Tattooing)",
-                    description: "✍️ Ancient tattoo art using traditional hand-tapping methods, with designs that tell stories of bravery, status, and life journeys."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Chico River",
-                description: "Powerful river flowing through the mountains"
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Chico River",
+                        description: "Powerful river flowing through the mountains"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1559827291-72ee739ce38c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Traditional Tattoos",
+                        description: "Ancient Kalinga tattoo artistry"
+                    }
+                ]
             },
-            {
-                url: "https://images.unsplash.com/photo-1559827291-72ee739ce38c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Traditional Tattoos",
-                description: "Ancient Kalinga tattoo artistry"
+            "mountain-province": {
+                name: "Mountain Province", 
+                info: "Famed for its majestic mountains, hanging coffins in Sagada, and beautiful limestone caves. A place of ancient rituals and stunning landscapes.",
+                spots: {
+                    natural: [
+                        {
+                            name: "Bomod-ok Falls",
+                            description: "💧 Also known as the Big Falls, this powerful waterfall drops 200 feet into a deep pool, surrounded by spectacular rock formations."
+                        },
+                        {
+                            name: "Mt. Kiltepan Sunrise View (Sagada)",
+                            description: "🌅 Famous viewpoint offering breathtaking sunrise views over a sea of clouds that blankets the rice terraces and mountain valleys."
+                        }
+                    ],
+                    manmade: [
+                        {
+                            name: "Sagada Hanging Coffins & Echo Valley",
+                            description: "⚰️ Ancient burial tradition where coffins are hung on limestone cliffs, representing the indigenous belief in being closer to ancestral spirits."
+                        },
+                        {
+                            name: "Bontoc Museum",
+                            description: "🏛️ Award-winning ethnographic museum showcasing Mountain Province's rich cultural heritage through artifacts, photographs, and dioramas."
+                        }
+                    ],
+                    religious: [
+                        {
+                            name: "Our Lady of Mt. Carmel Church",
+                            description: "⛪ Historic church in Sagada that blends Catholic worship with local indigenous practices, set against stunning mountain backdrop."
+                        },
+                        {
+                            name: "St. Mary's Episcopal Church",
+                            description: "🙏 Beautiful stone church representing the Anglican tradition in Sagada, known for its peaceful atmosphere and community outreach."
+                        }
+                    ],
+                    event: [
+                        {
+                            name: "Lang-ay Festival",
+                            description: "🎉 Annual festival celebrating Mountain Province's culture with street dancing, traditional music, and showcasing of local products and crafts."
+                        }
+                    ],
+                    product: [
+                        {
+                            name: "Weaving & Handwoven Textiles",
+                            description: "🧵 Intricately woven fabrics featuring traditional patterns and natural dyes, representing the skilled craftsmanship of local weavers."
+                        }
+                    ]
+                },
+                images: [
+                    {
+                        url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Sagada Hanging Coffins",
+                        description: "Ancient burial tradition in the cliffs"
+                    },
+                    {
+                        url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                        title: "Mt. Kiltepan Sunrise",
+                        description: "Breathtaking sunrise over sea of clouds"
+                    }
+                ]
             }
-        ]
-    },
-    "mountain-province": {
-        name: "Mountain Province", 
-        info: "Famed for its majestic mountains, hanging coffins in Sagada, and beautiful limestone caves. A place of ancient rituals and stunning landscapes.",
-        spots: {
-            natural: [
-                {
-                    name: "Bomod-ok Falls",
-                    description: "💧 Also known as the Big Falls, this powerful waterfall drops 200 feet into a deep pool, surrounded by spectacular rock formations."
-                },
-                {
-                    name: "Mt. Kiltepan Sunrise View (Sagada)",
-                    description: "🌅 Famous viewpoint offering breathtaking sunrise views over a sea of clouds that blankets the rice terraces and mountain valleys."
-                }
-            ],
-            manmade: [
-                {
-                    name: "Sagada Hanging Coffins & Echo Valley",
-                    description: "⚰️ Ancient burial tradition where coffins are hung on limestone cliffs, representing the indigenous belief in being closer to ancestral spirits."
-                },
-                {
-                    name: "Bontoc Museum",
-                    description: "🏛️ Award-winning ethnographic museum showcasing Mountain Province's rich cultural heritage through artifacts, photographs, and dioramas."
-                }
-            ],
-            religious: [
-                {
-                    name: "Our Lady of Mt. Carmel Church",
-                    description: "⛪ Historic church in Sagada that blends Catholic worship with local indigenous practices, set against stunning mountain backdrop."
-                },
-                {
-                    name: "St. Mary's Episcopal Church",
-                    description: "🙏 Beautiful stone church representing the Anglican tradition in Sagada, known for its peaceful atmosphere and community outreach."
-                }
-            ],
-            event: [
-                {
-                    name: "Lang-ay Festival",
-                    description: "🎉 Annual festival celebrating Mountain Province's culture with street dancing, traditional music, and showcasing of local products and crafts."
-                }
-            ],
-            product: [
-                {
-                    name: "Weaving & Handwoven Textiles",
-                    description: "🧵 Intricately woven fabrics featuring traditional patterns and natural dyes, representing the skilled craftsmanship of local weavers."
-                }
-            ]
-        },
-        images: [
-            {
-                url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Sagada Hanging Coffins",
-                description: "Ancient burial tradition in the cliffs"
-            },
-            {
-                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-                title: "Mt. Kiltepan Sunrise",
-                description: "Breathtaking sunrise over sea of clouds"
-            }
-        ]
-    }
-};
+        };
 
         // ========== CULTURAL FUNCTIONS ==========
         function showStory(storyId) {
@@ -1396,6 +1622,7 @@ const provinces = {
             showMainView();
             setupBreadcrumb();
             initCulturalFeatures();
+            setupMobileFeatures();
         }
 
         function setupBreadcrumb() {
@@ -1589,6 +1816,55 @@ const provinces = {
             // Add cultural animation to provinces
             document.querySelectorAll('.province').forEach((province, index) => {
                 province.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+
+        // Mobile-specific features
+        function setupMobileFeatures() {
+            // Add pinch-to-zoom for mobile
+            let initialDistance = null;
+            
+            document.getElementById('mapContainer').addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    initialDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            });
+            
+            document.getElementById('mapContainer').addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2 && initialDistance !== null) {
+                    e.preventDefault();
+                    
+                    const currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    
+                    const scaleChange = currentDistance / initialDistance;
+                    currentScale = Math.max(0.5, Math.min(3, currentScale * scaleChange));
+                    
+                    initialDistance = currentDistance;
+                    updateMapTransform();
+                }
+            });
+            
+            document.getElementById('mapContainer').addEventListener('touchend', function(e) {
+                if (e.touches.length < 2) {
+                    initialDistance = null;
+                }
+            });
+            
+            // Prevent accidental zoom on double-tap
+            let lastTap = 0;
+            document.getElementById('mapContainer').addEventListener('touchend', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                if (tapLength < 500 && tapLength > 0) {
+                    e.preventDefault();
+                }
+                lastTap = currentTime;
             });
         }
 
