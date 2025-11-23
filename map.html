@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cordillera - Complete Cultural Heritage Map</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2f1a 0%, #2c5530 100%);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* Cultural Background Overlay */
+        .cultural-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(230, 126, 34, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(52, 152, 219, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(46, 204, 113, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Map Styles */
+        .map-section {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(160deg, #8fb996 0%, #4a7c59 100%);
+            overflow: hidden;
+            cursor: grab;
+            border-right: 3px solid #2c5530;
+        }
+
+        .map-section:active {
+            cursor: grabbing;
+        }
+
+        #cordillera-map {
+            width: 100%;
+            height: 100%;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* Traditional Pattern Definitions */
+        .cordillera-pattern {
+            stroke: #000;
+            stroke-width: 0.5;
+        }
+
+        .pattern-1 { fill: url(#weavePattern1); }
+        .pattern-2 { fill: url(#weavePattern2); }
+        .pattern-3 { fill: url(#weavePattern3); }
+        .pattern-4 { fill: url(#weavePattern4); }
+        .pattern-5 { fill: url(#weavePattern5); }
+        .pattern-6 { fill: url(#weavePattern6); }
+
+        /* Province styles */
+        .province {
+            stroke: #2c5530;
+            stroke-width: 2;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            opacity: 0.85;
+            filter: saturate(0.9);
+        }
+
+        .province:hover {
+            stroke-width: 3;
+            opacity: 1;
+            filter: saturate(1.2) brightness(1.1);
+            transform-box: fill-box;
+            transform-origin: center;
+        }
+
+        .province.active {
+            filter: saturate(1.3) brightness(1.15);
+            stroke-width: 4;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { stroke-width: 4; }
+            50% { stroke-width: 5; }
+            100% { stroke-width: 4; }
+        }
+
+        .province-label {
+            font-size: 14px;
+            font-weight: bold;
+            fill: white;
+            text-shadow: 2px 2px 6px rgba(0,0,0,0.7);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Image Gallery Styles */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .gallery-caption {
+            padding: 10px;
+            background: white;
+        }
+        
+        .gallery-caption h4 {
+            margin: 0 0 5px 0;
+            color: #2c5530;
+            font-size: 14px;
+        }
+        
+        .gallery-caption p {
+            margin: 0;
+            color: #666;
+            font-size: 12px;
+        }
+
+        /* Cultural Pattern Animations */
+        .floating-pattern {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite linear;
+            font-size: 24px;
+        }
+
+        .pattern-1 { top: 10%; left: 15%; animation-delay: 0s; }
+        .pattern-2 { top: 60%; left: 80%; animation-delay: -5s; }
+        .pattern-3 { top: 30%; left: 70%; animation-delay: -10s; }
+        .pattern-4 { top: 80%; left: 20%; animation-delay: -15s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0px) rotate(360deg); }
+        }
+
+        /* Cultural Hotspots */
+        .cultural-hotspot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cultural-hotspot:hover {
+            transform: scale(1.2);
+            filter: brightness(1.3);
+        }
+
+        /* Map Navigation */
+        .map-navigation {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background: #2c5530;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+
+        /* Zoom Controls */
+        .zoom-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #2c5530;
+            color: white;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-btn:hover {
+            background: #e67e22;
+            transform: scale(1.1);
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-left: 4px solid #2c5530;
+            padding: 25px;
+            overflow-y: auto;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+            transition: transform 0.5s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(100%);
+        }
+
+        .toggle-sidebar {
+            position: absolute;
+            left: -50px;
+            top: 20px;
+            background: #2c5530;
+            color: white;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-sidebar:hover {
+            background: #e67e22;
+            padding-left: 20px;
+        }
+
+        /* Content Panels */
+        .info-panel, .province-detail, .municipal-detail {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .municipal-detail {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Storytelling Modal */
+        .story-modal {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: none;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .story-modal.active {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .story-content {
+            text-align: center;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #e67e22, #f39c12);
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #2c5530;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #e67e22;
+        }
+
+        /* Cultural Insights Section */
+        .cultural-insights {
+            background: linear-gradient(135deg, #fffaf0, #fdf6e3);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #e67e22;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .insight-item:hover {
+            transform: translateX(10px);
+            background: rgba(230, 126, 34, 0.1);
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: #e67e22;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Traditional Music Player */
+        .music-player {
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #e67e22;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: #f39c12;
+            transform: scale(1.1);
+        }
+
+        /* Timeline Component */
+        .cultural-timeline {
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .timeline-item {
+            padding: 15px 20px 15px 40px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            background: rgba(230, 126, 34, 0.1);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: #e67e22;
+            border-radius: 50%;
+        }
+
+        /* Cultural Gallery */
+        .cultural-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .gallery-item-old {
+            height: 80px;
+            background: linear-gradient(45deg, #e67e22, #f39c12);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item-old:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Traditional Recipe Cards */
+        .recipe-card {
+            background: linear-gradient(135deg, #fffaf0, #fdf6e3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 2px solid #e67e22;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.2);
+        }
+
+        .recipe-title {
+            color: #2c5530;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Language Section */
+        .language-section {
+            background: rgba(44, 85, 48, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .phrase-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 6px;
+            border-left: 3px solid #e67e22;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .phrase-item:hover {
+            background: rgba(230, 126, 34, 0.1);
+            transform: translateX(5px);
+        }
+
+        h1 {
+            color: #2c5530;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, #2c5530, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #e67e22;
+            margin: 25px 0 15px 0;
+            border-bottom: 3px solid #e67e22;
+            padding-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        h3 {
+            color: #2c5530;
+            margin: 20px 0 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .spot-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .spot-item {
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            border-left: 5px solid #e67e22;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .spot-item:hover {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            transform: translateX(8px) translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .attraction-details {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #e67e22, #f39c12);
+            transform: translateY(-2px);
+        }
+
+        /* Breadcrumb Navigation */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb span {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb span:hover {
+            color: #e67e22;
+        }
+
+        .breadcrumb .separator {
+            margin: 0 10px;
+            color: #999;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e67e22;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom Alert Styling */
+        .custom-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border-left: 5px solid #e67e22;
+        }
+        
+        .custom-alert h3 {
+            color: #2c5530;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+        
+        .custom-alert p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .custom-alert button {
+            padding: 10px 25px;
+            background: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .custom-alert button:hover {
+            background: #f39c12;
+            transform: translateY(-2px);
+        }
+        
+        .alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+        }
+
+        /* About Link */
+        .about-link {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #2c5530;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .about-link:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="cultural-overlay"></div>
+    
+    <!-- Floating Cultural Patterns -->
+    <div class="floating-pattern pattern-1">◈</div>
+    <div class="floating-pattern pattern-2">⬡</div>
+    <div class="floating-pattern pattern-3">◊</div>
+    <div class="floating-pattern pattern-4">✦</div>
+
+    <!-- About Link -->
+    <a href="aboutus.html" class="about-link">About Us</a>
+
+    <!-- Storytelling Modal -->
+    <div class="story-modal" id="storyModal">
+        <button class="close-modal" onclick="closeStory()">×</button>
+        <div class="story-content">
+            <div class="story-image" id="storyImage">
+                🌾
+            </div>
+            <h2 id="storyTitle">Cordillera Heritage</h2>
+            <p id="storyText">Discover the rich cultural tapestry of the Cordillera region.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Map Section -->
+        <div class="map-section" id="mapContainer">
+            <!-- Main Regional Map -->
+            <svg id="cordillera-map" viewBox="0 0 1000 800">
+                <defs>
+                    <!-- Traditional Cordillera Weaving Patterns -->
+                    <pattern id="weavePattern1" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
+                        <rect width="20" height="20" fill="#4a7c59"/>
+                        <path d="M0,0 L20,20 M10,0 L0,10 M20,10 L10,20" stroke="#2c5530" stroke-width="2"/>
+                    </pattern>
+                    
+                    <pattern id="weavePattern2" patternUnits="userSpaceOnUse" width="25" height="25">
+                        <rect width="25" height="25" fill="#8d6b94"/>
+                        <circle cx="12.5" cy="12.5" r="4" fill="#6b4c71" stroke="#4a3450" stroke-width="1"/>
+                        <rect x="0" y="0" width="5" height="25" fill="#6b4c71"/>
+                        <rect x="20" y="0" width="5" height="25" fill="#6b4c71"/>
+                    </pattern>
+                    
+                    <pattern id="weavePattern3" patternUnits="userSpaceOnUse" width="30" height="30" patternTransform="rotate(30)">
+                        <rect width="30" height="30" fill="#3498db"/>
+                        <path d="M0,15 L30,15 M15,0 L15,30" stroke="#2980b9" stroke-width="3"/>
+                        <rect x="12" y="12" width="6" height="6" fill="#ffffff"/>
+                    </pattern>
+                    
+                    <pattern id="weavePattern4" patternUnits="userSpaceOnUse" width="22" height="22">
+                        <rect width="22" height="22" fill="#e74c3c"/>
+                        <path d="M0,0 L22,22 M22,0 L0,22" stroke="#c0392b" stroke-width="2"/>
+                        <circle cx="11" cy="11" r="3" fill="#ffffff"/>
+                    </pattern>
+                    
+                    <pattern id="weavePattern5" patternUnits="userSpaceOnUse" width="28" height="28" patternTransform="rotate(15)">
+                        <rect width="28" height="28" fill="#f39c12"/>
+                        <rect x="0" y="0" width="14" height="14" fill="#e67e22"/>
+                        <rect x="14" y="14" width="14" height="14" fill="#e67e22"/>
+                        <path d="M0,14 L14,0 M14,28 L28,14" stroke="#d35400" stroke-width="1.5"/>
+                    </pattern>
+                    
+                    <pattern id="weavePattern6" patternUnits="userSpaceOnUse" width="24" height="24">
+                        <rect width="24" height="24" fill="#27ae60"/>
+                        <path d="M0,12 L24,12 M12,0 L12,24" stroke="#219652" stroke-width="2"/>
+                        <rect x="8" y="8" width="8" height="8" fill="#2c5530"/>
+                    </pattern>
+                </defs>
+                
+                <!-- Provinces with Cultural Hotspots -->
+                <g id="provinces">
+                    <!-- Abra -->
+                    <path id="abra" class="province pattern-1" d="M300,350 L450,300 L500,350 L450,450 L350,500 L250,450 Z" />
+                    <!-- Apayao -->
+                    <path id="apayao" class="province pattern-2" d="M600,100 L750,150 L700,250 L650,300 L550,250 L500,200 Z" />
+                    <!-- Benguet -->
+                    <path id="benguet" class="province pattern-3" d="M350,500 L450,550 L400,650 L300,600 L250,550 Z" />
+                    <!-- Ifugao -->
+                    <path id="ifugao" class="province pattern-4" d="M500,350 L550,500 L450,550 L350,500 L400,450 Z" />
+                    <!-- Kalinga -->
+                    <path id="kalinga" class="province pattern-5" d="M550,250 L650,300 L600,400 L500,350 L450,300 Z" />
+                    <!-- Mountain Province -->
+                    <path id="mountain-province" class="province pattern-6" d="M450,300 L600,400 L550,500 L400,450 L450,350 Z" />
+                    
+                    <!-- Cultural Hotspots -->
+                    <circle cx="400" cy="400" r="15" fill="#e74c3c" class="cultural-hotspot" onclick="showStory('rice-terraces')" />
+                    <circle cx="500" cy="300" r="15" fill="#3498db" class="cultural-hotspot" onclick="showStory('tattoo-tradition')" />
+                    <circle cx="350" cy="550" r="15" fill="#f39c12" class="cultural-hotspot" onclick="showStory('weaving-heritage')" />
+                    <circle cx="600" cy="200" r="15" fill="#27ae60" class="cultural-hotspot" onclick="showStory('festival-culture')" />
+                </g>
+                
+                <!-- Province Labels -->
+                <text x="350" y="400" class="province-label">Abra</text>
+                <text x="620" y="200" class="province-label">Apayao</text>
+                <text x="350" y="600" class="province-label">Benguet</text>
+                <text x="430" y="500" class="province-label">Ifugao</text>
+                <text x="550" y="350" class="province-label">Kalinga</text>
+                <text x="480" y="420" class="province-label">Mountain Province</text>
+            </svg>
+
+            <!-- Navigation -->
+            <div class="map-navigation">
+                <button class="nav-btn" onclick="showRegionalMap()">Regional Map</button>
+            </div>
+
+            <!-- Zoom Controls -->
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomIn()">+</button>
+                <button class="zoom-btn" onclick="zoomOut()">−</button>
+                <button class="zoom-btn" onclick="resetZoom()">↺</button>
+            </div>
+        </div>
+
+        <!-- Enhanced Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <button class="toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            
+            <!-- Breadcrumb Navigation -->
+            <div class="breadcrumb" id="breadcrumb">
+                <span onclick="showMainView()">Cordillera Region</span>
+            </div>
+
+            <!-- Main Cultural Overview -->
+            <div class="info-panel" id="main-info">
+                <h1>🏔️ Cordillera Heritage</h1>
+                <p>Discover the living traditions and rich cultural heritage of the Philippine Cordillera region.</p>
+                
+                <div class="cultural-insights">
+                    <h2>🎭 Cultural Insights</h2>
+                    <div class="insight-item" onclick="showStory('rice-terraces')">
+                        <div class="insight-icon">🌾</div>
+                        <div>
+                            <strong>Rice Terraces Engineering</strong>
+                            <br>
+                            <small>2,000-year-old agricultural marvel</small>
+                        </div>
+                    </div>
+                    <div class="insight-item" onclick="showStory('tattoo-tradition')">
+                        <div class="insight-icon">✍️</div>
+                        <div>
+                            <strong>Kalinga Tattoo Art</strong>
+                            <br>
+                            <small>Ancient body art traditions</small>
+                        </div>
+                    </div>
+                    <div class="insight-item" onclick="showStory('weaving-heritage')">
+                        <div class="insight-icon">🧵</div>
+                        <div>
+                            <strong>Traditional Weaving</strong>
+                            <br>
+                            <small>Intricate patterns and symbols</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Traditional Music -->
+                <div class="music-player">
+                    <h3>🎵 Traditional Music</h3>
+                    <p>Listen to authentic Cordillera melodies</p>
+                    <div class="player-controls">
+                        <button class="play-btn" onclick="playTraditionalMusic()">▶</button>
+                        <span>Gangsa Ensemble</span>
+                    </div>
+                </div>
+
+                <h2>🗺️ Quick Navigation</h2>
+                <div class="spot-list">
+                    <div class="spot-item">🏔️ 6 Unique Provinces</div>
+                    <div class="spot-item">🌾 Ancient Rice Terraces</div>
+                    <div class="spot-item">🎨 Rich Cultural Heritage</div>
+                    <div class="spot-item">🌲 Pristine Natural Beauty</div>
+                </div>
+            </div>
+
+            <!-- Province Detail with Cultural Elements -->
+            <div class="province-detail" id="province-detail" style="display: none;">
+                <div class="loading" id="province-loading">
+                    <div class="spinner"></div>
+                    <p>Loading province details...</p>
+                </div>
+                
+                <div id="province-content">
+                    <h1 id="province-title">Province Name</h1>
+                    <p id="province-desc">Description will appear here.</p>
+                    
+                    <!-- Image Gallery -->
+                    <div id="province-gallery" class="image-gallery">
+                        <!-- Images will be loaded here -->
+                    </div>
+                    
+                    <h2>🏞️ Natural Attractions</h2>
+                    <div id="natural-spots" class="spot-list"></div>
+                    
+                    <h2>🏛️ Man-made Sites</h2>
+                    <div id="manmade-spots" class="spot-list"></div>
+                    
+                    <h2>⛪ Religious Sites</h2>
+                    <div id="religious-spots" class="spot-list"></div>
+                    
+                    <h2>🎉 Cultural Events</h2>
+                    <div id="event-spots" class="spot-list"></div>
+                    
+                    <h2>🛍️ Local Products</h2>
+                    <div id="product-spots" class="spot-list"></div>
+                    
+                    <button class="back-btn" onclick="showMainView()">← Back to Regional Map</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CULTURAL DATABASES ==========
+        const culturalStories = {
+            'rice-terraces': {
+                title: 'The Living Rice Terraces',
+                content: 'For over 2,000 years, the Ifugao people have maintained these magnificent rice terraces carved into the mountains. Built with stone and mud walls without modern tools, they represent an ancient harmony between humanity and nature.',
+                image: '🌾'
+            },
+            'tattoo-tradition': {
+                title: 'Kalinga Tattoo Artistry',
+                content: 'The ancient art of batok (tattoo) is more than decoration - it tells stories of bravery, status, and life journeys. Whang-od Oggay, the last traditional Kalinga tattoo artist, continues this thousand-year tradition.',
+                image: '✍️'
+            },
+            'weaving-heritage': {
+                title: 'Threads of Tradition',
+                content: 'Cordillera weaving patterns are mathematical marvels passed through generations. Each design carries meaning - from ancestral legends to community values, woven into intricate textiles using backstrap looms.',
+                image: '🧵'
+            },
+            'festival-culture': {
+                title: 'Rhythms of Celebration',
+                content: 'From the Panagbenga Flower Festival to the Lang-ay Cultural Festival, Cordillera celebrations blend ancient rituals with contemporary expressions, featuring gangsa music, traditional dances, and community feasts.',
+                image: '🎉'
+            }
+        };
+
+         // ========== COMPLETE PROVINCE DATA WITH DESCRIPTIONS ==========
+const provinces = {
+    "abra": {
+        name: "Abra Province",
+        info: "Abra is a landlocked province known for its natural caves, rivers, and the majestic Abra River. It's rich in history and culture, home to the Tingguian people.",
+        spots: {
+            natural: [
+                {
+                    name: "Apao Rolling Hills",
+                    description: "🌄 Vast expanse of green hills that resemble waves, offering breathtaking panoramic views of Abra's landscape. Perfect for photography, nature walks, and witnessing spectacular sunsets."
+                },
+                {
+                    name: "Kaparkan Falls", 
+                    description: "💧 Multi-tiered waterfalls with unique rock formations creating natural infinity pools. Known for its turquoise waters during dry season and surrounded by lush vegetation."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Layugan Garden",
+                    description: "🌿 Beautifully landscaped public garden featuring native plants, flowing streams, and peaceful walking paths perfect for family picnics and meditation."
+                },
+                {
+                    name: "Calaba and Don Marianos Bridge",
+                    description: "🏛️ Historic Spanish-era stone bridges that showcase colonial architecture and serve as important cultural landmarks in the province."
+                }
+            ],
+            religious: [
+                {
+                    name: "St. James the Elder Cathedral",
+                    description: "⛪ Magnificent centuries-old cathedral in Bangued featuring Baroque architecture and intricate religious artifacts dating back to Spanish colonization."
+                },
+                {
+                    name: "St. Catherine of Alexandria Church (Tayum Church)",
+                    description: "🕍 UNESCO World Heritage Site candidate, known for its earthquake-resistant architecture and well-preserved 19th-century design."
+                }
+            ],
+            event: [
+                {
+                    name: "Kawayan Festival",
+                    description: "🎋 Annual celebration highlighting Abra's bamboo industry with street dancing, craft exhibitions, and cultural performances showcasing Tingguian traditions."
+                }
+            ],
+            product: [
+                {
+                    name: "Kinnamayan Textiles",
+                    description: "🧵 Handwoven textiles featuring intricate geometric patterns and natural dyes, representing the rich cultural heritage of Tingguian weavers."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Apao Rolling Hills",
+                description: "Vast green hills that roll across the landscape"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Kaparkan Falls",
+                description: "Multi-tiered waterfalls with natural rock formations"
+            }
+        ]
+    },
+    "apayao": {
+        name: "Apayao Province",
+        info: "Apayao is the northernmost province, characterized by lush forests, stunning waterfalls, and the pristine Apayao River. It's the domain of the Isneg people.",
+        spots: {
+            natural: [
+                {
+                    name: "Lussok Crystal Cave",
+                    description: "💎 Spectacular cave system featuring stunning crystal formations, underground rivers, and chambers that reveal millions of years of geological history."
+                },
+                {
+                    name: "Mt. Kilang",
+                    description: "⛰️ Majestic mountain peak offering challenging trails for experienced hikers and rewarding summit views of Apayao's untouched wilderness."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Isnag Heritage Houses",
+                    description: "🏠 Traditional Isneg houses built using indigenous architectural techniques, showcasing the community's sustainable building practices."
+                },
+                {
+                    name: "Hanging Bridge of Cagandungan",
+                    description: "🌉 Swaying footbridge made from local materials that crosses the river, offering adventurous crossing and beautiful river views."
+                }
+            ],
+            religious: [
+                {
+                    name: "Holy Rosary Church",
+                    description: "⛪ Historic church that blends Catholic traditions with indigenous Isneg architectural elements, representing cultural synthesis."
+                },
+                {
+                    name: "Bethany Cavalry Church",
+                    description: "🙏 Secluded mountain church known for its peaceful atmosphere and stunning location overlooking Apayao's forested valleys."
+                }
+            ],
+            event: [
+                {
+                    name: "Rambak ni Mannalon",
+                    description: "🌾 Agricultural festival celebrating Apayao's farming traditions with harvest rituals, traditional games, and community feasting."
+                }
+            ],
+            product: [
+                {
+                    name: "Coffee (Apayao Blend)",
+                    description: "☕ Premium Arabica coffee grown in Apayao's highlands, known for its rich flavor profile and sustainable farming practices."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Lussok Crystal Cave",
+                description: "Magnificent crystal formations underground"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Mt. Kilang",
+                description: "Scenic mountain trails and viewpoints"
+            }
+        ]
+    },
+    "benguet": {
+        name: "Benguet Province", 
+        info: "Home to Baguio City, the Summer Capital of the Philippines. Famous for its cool climate, strawberry farms, and Mount Pulag, the highest peak in Luzon.",
+        spots: {
+            natural: [
+                {
+                    name: "Mt. Pulag",
+                    description: "⛰️ Third highest mountain in the Philippines famous for its 'sea of clouds' phenomenon and diverse mossy forest ecosystem at 2,926 meters above sea level."
+                },
+                {
+                    name: "Bridal Veil Falls",
+                    description: "💫 Picturesque 60-foot waterfall that cascades like a bridal veil into a natural pool, surrounded by lush pine forests and perfect for swimming."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Igorot Stone Kingdom",
+                    description: "🏰 Modern cultural park featuring stone structures inspired by Igorot architecture, with educational exhibits about Cordillera heritage."
+                },
+                {
+                    name: "La Trinidad Strawberry Farm",
+                    description: "🍓 Vast strawberry plantation where visitors can pick fresh strawberries, learn about cultivation, and enjoy strawberry-based products."
+                }
+            ],
+            religious: [
+                {
+                    name: "Baguio Cathedral of Our Lady of Atonement",
+                    description: "✝️ Iconic pink cathedral perched on a hilltop, featuring stunning rose windows and serving as a spiritual landmark in Baguio City."
+                },
+                {
+                    name: "Pink Sisters' Convent and Chapel",
+                    description: "🙏 Serene convent known for its pink-themed architecture and peaceful chapel where visitors can experience moments of quiet reflection."
+                }
+            ],
+            event: [
+                {
+                    name: "Panagbenga Festival",
+                    description: "🌸 Month-long flower festival featuring grand floral floats, street dancing in flower costumes, and garden exhibitions celebrating Benguet's blooms."
+                }
+            ],
+            product: [
+                {
+                    name: "Strawberry Taho / Strawberry Jam",
+                    description: "🥛 Fresh strawberry taho (soy pudding) and homemade jams made from La Trinidad's famous strawberries, beloved local delicacies."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Mount Pulag",
+                description: "Sea of clouds at the highest peak in Luzon"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Baguio City",
+                description: "Summer capital with pine tree landscapes"
+            }
+        ]
+    },
+    "ifugao": {
+        name: "Ifugao Province",
+        info: "The legendary home of the Banaue Rice Terraces, a UNESCO World Heritage Site. A testament to the engineering genius of the Ifugao people.",
+        spots: {
+            natural: [
+                {
+                    name: "Mt. Amuyao",
+                    description: "⛰️ One of the highest peaks in the Philippines at 2,702 meters, offering challenging climbs and spectacular views of surrounding rice terraces."
+                },
+                {
+                    name: "Tappiya Waterfalls",
+                    description: "💧 Powerful 70-meter waterfall located near Batad Rice Terraces, accessible through scenic hikes and perfect for refreshing dips."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Banaue Rice Terraces",
+                    description: "🌾 2,000-year-old terraces carved into mountains by Ifugao ancestors, often called the 'Eighth Wonder of the World' and UNESCO heritage site."
+                },
+                {
+                    name: "Tam-an Village",
+                    description: "🏠 Traditional Ifugao village showcasing native houses, wood carving traditions, and authentic cultural practices passed through generations."
+                }
+            ],
+            religious: [
+                {
+                    name: "Lagave Catholic Church",
+                    description: "⛪ Historic church that represents the fusion of Catholic faith with Ifugao traditions, featuring unique local architectural elements."
+                },
+                {
+                    name: "St. Mary Magdalene Parish (Hapao)",
+                    description: "🙏 Century-old church serving the Hapao community, known for its simple beauty and important role in local religious life."
+                }
+            ],
+            event: [
+                {
+                    name: "Gotad ad Ifugao Festival",
+                    description: "🎉 Cultural festival celebrating Ifugao heritage with traditional rituals, native games, and performances of the Hudhud epic chants."
+                }
+            ],
+            product: [
+                {
+                    name: "Tinawon Rice",
+                    description: "🍚 Premium heirloom rice variety grown only once a year in Ifugao's terraces, known for its exceptional aroma and nutritional value."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Banaue Rice Terraces",
+                description: "2,000-year-old engineering marvel"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Mount Amuyao",
+                description: "Majestic peak with panoramic views"
+            }
+        ]
+    },
+    "kalinga": {
+        name: "Kalinga Province",
+        info: "Known for its powerful Chico River, rich tattoo traditions (home to the legendary mambabatok Whang-od), and vibrant cultural festivals.",
+        spots: {
+            natural: [
+                {
+                    name: "Chico River",
+                    description: "🌊 Major river system flowing through Kalinga, famous for whitewater rafting adventures and scenic riverside communities."
+                },
+                {
+                    name: "Lubuagan Rice Terraces",
+                    description: "🌾 Lesser-known but equally stunning rice terraces offering pristine views and authentic cultural experiences away from crowds."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Kalinga Cultural Center & Museum",
+                    description: "🏛️ Educational center preserving Kalinga's cultural heritage through artifacts, traditional tools, and exhibits on tattoo traditions."
+                },
+                {
+                    name: "Awichon Village (Lubuagan)",
+                    description: "🏠 Traditional Kalinga village where visitors can witness authentic tattoo practices and learn about indigenous community life."
+                }
+            ],
+            religious: [
+                {
+                    name: "St. Joseph Husband of Mary Parish Church",
+                    description: "⛪ Beautiful church that serves as both spiritual center and community gathering place, featuring local architectural influences."
+                },
+                {
+                    name: "St. William's Cathedral",
+                    description: "✝️ Main cathedral in Tabuk City combining modern design with traditional Kalinga motifs, representing the province's evolving identity."
+                }
+            ],
+            event: [
+                {
+                    name: "Bodong Festival",
+                    description: "🎉 Peace pact festival celebrating Kalinga's traditional conflict resolution systems with tribal ceremonies, dances, and community unity."
+                }
+            ],
+            product: [
+                {
+                    name: "Kalinga Tattoos (Whang-Od's Traditional Tattooing)",
+                    description: "✍️ Ancient tattoo art using traditional hand-tapping methods, with designs that tell stories of bravery, status, and life journeys."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Chico River",
+                description: "Powerful river flowing through the mountains"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1559827291-72ee739ce38c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Traditional Tattoos",
+                description: "Ancient Kalinga tattoo artistry"
+            }
+        ]
+    },
+    "mountain-province": {
+        name: "Mountain Province", 
+        info: "Famed for its majestic mountains, hanging coffins in Sagada, and beautiful limestone caves. A place of ancient rituals and stunning landscapes.",
+        spots: {
+            natural: [
+                {
+                    name: "Bomod-ok Falls",
+                    description: "💧 Also known as the Big Falls, this powerful waterfall drops 200 feet into a deep pool, surrounded by spectacular rock formations."
+                },
+                {
+                    name: "Mt. Kiltepan Sunrise View (Sagada)",
+                    description: "🌅 Famous viewpoint offering breathtaking sunrise views over a sea of clouds that blankets the rice terraces and mountain valleys."
+                }
+            ],
+            manmade: [
+                {
+                    name: "Sagada Hanging Coffins & Echo Valley",
+                    description: "⚰️ Ancient burial tradition where coffins are hung on limestone cliffs, representing the indigenous belief in being closer to ancestral spirits."
+                },
+                {
+                    name: "Bontoc Museum",
+                    description: "🏛️ Award-winning ethnographic museum showcasing Mountain Province's rich cultural heritage through artifacts, photographs, and dioramas."
+                }
+            ],
+            religious: [
+                {
+                    name: "Our Lady of Mt. Carmel Church",
+                    description: "⛪ Historic church in Sagada that blends Catholic worship with local indigenous practices, set against stunning mountain backdrop."
+                },
+                {
+                    name: "St. Mary's Episcopal Church",
+                    description: "🙏 Beautiful stone church representing the Anglican tradition in Sagada, known for its peaceful atmosphere and community outreach."
+                }
+            ],
+            event: [
+                {
+                    name: "Lang-ay Festival",
+                    description: "🎉 Annual festival celebrating Mountain Province's culture with street dancing, traditional music, and showcasing of local products and crafts."
+                }
+            ],
+            product: [
+                {
+                    name: "Weaving & Handwoven Textiles",
+                    description: "🧵 Intricately woven fabrics featuring traditional patterns and natural dyes, representing the skilled craftsmanship of local weavers."
+                }
+            ]
+        },
+        images: [
+            {
+                url: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Sagada Hanging Coffins",
+                description: "Ancient burial tradition in the cliffs"
+            },
+            {
+                url: "https://images.unsplash.com/photo-1464822759843-e2d1357f1279?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+                title: "Mt. Kiltepan Sunrise",
+                description: "Breathtaking sunrise over sea of clouds"
+            }
+        ]
+    }
+};
+
+        // ========== CULTURAL FUNCTIONS ==========
+        function showStory(storyId) {
+            const story = culturalStories[storyId];
+            if (!story) return;
+
+            const modal = document.getElementById('storyModal');
+            document.getElementById('storyTitle').textContent = story.title;
+            document.getElementById('storyText').textContent = story.content;
+            document.getElementById('storyImage').innerHTML = story.image;
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeStory() {
+            const modal = document.getElementById('storyModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function playTraditionalMusic() {
+            console.log('Playing traditional Gangsa music...');
+        }
+
+        // ========== CUSTOM ALERT FUNCTION ==========
+        function showSpotAlert(title, description) {
+            // Create overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'alert-overlay';
+            
+            // Create alert box
+            const alertBox = document.createElement('div');
+            alertBox.className = 'custom-alert';
+            alertBox.innerHTML = `
+                <h3>${title}</h3>
+                <p>${description}</p>
+                <button onclick="closeCustomAlert()">Close</button>
+            `;
+            
+            // Add to document
+            document.body.appendChild(overlay);
+            document.body.appendChild(alertBox);
+            
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCustomAlert() {
+            const overlay = document.querySelector('.alert-overlay');
+            const alertBox = document.querySelector('.custom-alert');
+            
+            if (overlay) overlay.remove();
+            if (alertBox) alertBox.remove();
+            
+            // Restore body scroll
+            document.body.style.overflow = 'auto';
+        }
+
+        // ========== MAP NAVIGATION FUNCTIONS ==========
+        let currentView = 'regional';
+        let currentProvince = null;
+        let currentScale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        function init() {
+            setupMapInteractions();
+            showMainView();
+            setupBreadcrumb();
+            initCulturalFeatures();
+        }
+
+        function setupBreadcrumb() {
+            // Breadcrumb will be updated dynamically
+        }
+
+        function updateBreadcrumb() {
+            const breadcrumb = document.getElementById('breadcrumb');
+            let html = '<span onclick="showMainView()">Cordillera Region</span>';
+            
+            if (currentProvince) {
+                html += `<span class="separator">›</span><span>${provinces[currentProvince].name}</span>`;
+            }
+            
+            breadcrumb.innerHTML = html;
+        }
+
+        function showMainView() {
+            currentView = 'regional';
+            currentProvince = null;
+            
+            document.getElementById('cordillera-map').style.display = 'block';
+            
+            document.getElementById('main-info').style.display = 'block';
+            document.getElementById('province-detail').style.display = 'none';
+            
+            document.querySelectorAll('.province').forEach(p => p.classList.remove('active'));
+            resetZoom();
+            updateBreadcrumb();
+        }
+
+        function showProvinceDetail(provinceId) {
+            const province = provinces[provinceId];
+            if (!province) return;
+
+            currentView = 'provincial';
+            currentProvince = provinceId;
+
+            document.getElementById('province-loading').style.display = 'none';
+            document.getElementById('province-content').style.display = 'block';
+            
+            document.getElementById('province-title').textContent = province.name;
+            document.getElementById('province-desc').textContent = province.info;
+            
+            // Populate spots by category
+            populateSpots('natural-spots', province.spots.natural);
+            populateSpots('manmade-spots', province.spots.manmade);
+            populateSpots('religious-spots', province.spots.religious);
+            populateSpots('event-spots', province.spots.event);
+            populateSpots('product-spots', province.spots.product);
+            
+            // POPULATE IMAGE GALLERY
+            const galleryContainer = document.getElementById('province-gallery');
+            galleryContainer.innerHTML = '';
+            
+            province.images.forEach(image => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${image.url}" alt="${image.title}" class="gallery-image" loading="lazy">
+                    <div class="gallery-caption">
+                        <h4>${image.title}</h4>
+                        <p>${image.description}</p>
+                    </div>
+                `;
+                galleryContainer.appendChild(galleryItem);
+            });
+            
+            document.getElementById('main-info').style.display = 'none';
+            document.getElementById('province-detail').style.display = 'block';
+            
+            // Highlight active province
+            document.querySelectorAll('.province').forEach(p => p.classList.remove('active'));
+            document.getElementById(provinceId).classList.add('active');
+            
+            // Auto-open sidebar if collapsed
+            document.getElementById('sidebar').classList.remove('collapsed');
+            
+            updateBreadcrumb();
+        }
+
+        function populateSpots(containerId, spots) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (spots && spots.length > 0) {
+                spots.forEach(spot => {
+                    const spotElement = document.createElement('div');
+                    spotElement.className = 'spot-item';
+                    spotElement.innerHTML = `
+                        <strong>${spot.name}</strong>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">Click for details</div>
+                    `;
+                    
+                    // Add click event to show custom alert
+                    spotElement.addEventListener('click', function() {
+                        showSpotAlert(spot.name, spot.description);
+                    });
+                    
+                    container.appendChild(spotElement);
+                });
+            } else {
+                container.innerHTML = '<div class="spot-item">No entries available</div>';
+            }
+        }
+
+        // Map navigation
+        function showRegionalMap() {
+            showMainView();
+        }
+
+        // Setup interactions
+        function setupMapInteractions() {
+            // Province click events
+            document.querySelectorAll('.province').forEach(province => {
+                province.addEventListener('click', function() {
+                    showProvinceDetail(this.id);
+                });
+            });
+        }
+
+        // Zoom functionality
+        function startDrag(e) {
+            isDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            document.getElementById('mapContainer').style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateMapTransform();
+        }
+
+        function endDrag() {
+            isDragging = false;
+            document.getElementById('mapContainer').style.cursor = 'grab';
+        }
+
+        function updateMapTransform() {
+            const map = document.getElementById('cordillera-map');
+            map.style.transform = `scale(${currentScale}) translate(${translateX}px, ${translateY}px)`;
+        }
+
+        function zoomIn() {
+            currentScale = Math.min(currentScale * 1.3, 3);
+            updateMapTransform();
+        }
+
+        function zoomOut() {
+            currentScale = Math.max(currentScale / 1.3, 0.5);
+            updateMapTransform();
+        }
+
+        function resetZoom() {
+            currentScale = 1;
+            translateX = 0;
+            translateY = 0;
+            updateMapTransform();
+        }
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Touch events for mobile
+        function handleTouchStart(e) {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                startX = e.touches[0].clientX - translateX;
+                startY = e.touches[0].clientY - translateY;
+            }
+        }
+
+        function handleTouchMove(e) {
+            if (!isDragging || e.touches.length !== 1) return;
+            e.preventDefault();
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            updateMapTransform();
+        }
+
+        // Cultural features initialization
+        function initCulturalFeatures() {
+            console.log('Cultural features initialized');
+            
+            // Add cultural animation to provinces
+            document.querySelectorAll('.province').forEach((province, index) => {
+                province.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+
+        // Initialize everything
+        window.addEventListener('load', function() {
+            init();
+            
+            // Also close alert when clicking overlay
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('alert-overlay')) {
+                    closeCustomAlert();
+                }
+            });
+            
+            // Close alert with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeCustomAlert();
+                }
+            });
+        });
+        
+        // Add drag events
+        document.getElementById('mapContainer').addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', endDrag);
+        document.getElementById('mapContainer').addEventListener('touchstart', handleTouchStart);
+        document.getElementById('mapContainer').addEventListener('touchmove', handleTouchMove);
+        document.getElementById('mapContainer').addEventListener('touchend', endDrag);
+    </script>
+</body>
+</html>

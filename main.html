@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover the Cordillera</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .intro-container {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), 
+                        url('https://media.giphy.com/media/8LpEhnKQ4olb2/giphy.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        /* Add a subtle overlay to make text more readable */
+        .intro-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .intro-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
+            font-weight: 700;
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            margin-bottom: 3rem;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            font-weight: 300;
+        }
+
+        .continue-btn {
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            color: white;
+            background: linear-gradient(45deg, #e67e22, #f39c12);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-btn:hover {
+            background: linear-gradient(45deg, #f39c12, #e67e22);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.6);
+        }
+
+        .continue-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Subtle floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .continue-btn::after {
+            content: '→';
+            margin-left: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .continue-btn:hover::after {
+            transform: translateX(5px);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            .tagline {
+                font-size: 1.4rem;
+            }
+            .continue-btn {
+                padding: 15px 40px;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            .tagline {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="intro-container">
+        <div class="intro-content">
+            <h1>Hello Travellers</h1>
+            <p class="tagline">Welcome to Cordillera Region.</p>
+            <a href="map.html" class="continue-btn">Click to Explore!</a>
+        </div>
+    </div>
+</body>
+</html>
